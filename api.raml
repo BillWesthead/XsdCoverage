@@ -1,0 +1,136 @@
+#%RAML 0.8
+title: Guestline
+version: v1
+baseUri: http://bill.api.dev
+protocols:
+  - HTTP
+  - HTTPS # ONLY https on production. Varnish will drop content from http requests.
+
+schemas: # Stored for reference, but not used to validate examples
+  - OTA_Success-xml: !include schemas/OTA_Success.xml
+  - OTA_Error-xml: !include schemas/OTA_Error.xml
+  - OTA_HotelResNotifRS-xml: !include schemas/OTA_HotelResNotifRS.xml
+  - OTA_HotelResModifyRS-xml: !include schemas/OTA_HotelResModifyRS.xml
+
+/OTA_HotelInvCountNotifRQ:
+  get:
+    body:
+      application/xml:
+    responses:
+      405: # /OTA_ErrorRS
+        description: Only POST requests will be actioned.
+        body:
+          application/xml:
+            example: !include ./examples/OTA_Error.xml
+  post:
+    body:
+      application/xml:
+    responses:
+      200: # /OTA_HotelInvCountNotifRS
+        description: |
+          Invetory will be parsed, matched against property and an API request sent to the extranet.
+          Reponse will be checked before returning generic success message.
+        body:
+          application/xml:
+            example: !include ./examples/OTA_Success.xml
+
+/OTA_HotelRateAmountNotifRQ:
+  get:
+    body:
+      application/xml:
+    responses:
+      405: # /OTA_ErrorRS
+        description: Only POST requests will be actioned.
+        body:
+          application/xml:
+            example: !include ./examples/OTA_Error.xml
+  post:
+    body:
+      application/xml:
+    responses:
+      200: # /OTA_HotelRateAmountNotifRS
+        description: |
+          We do not currently process rate changes.
+          Extranet rates will be pre-popluated and inventory supplied will be mapped.
+          Success message will be returned and data stored in the event of rates being received.
+        body:
+          application/xml:
+            example: !include ./examples/OTA_Success.xml
+
+/OTA_HotelBookingRuleNotifRQ:
+  get:
+    body:
+      application/xml:
+    responses:
+      405: # /OTA_ErrorRS
+        description: Only POST requests will be actioned.
+        body:
+          application/xml:
+            example: !include ./examples/OTA_Error.xml
+  post:
+    body:
+      application/xml:
+    responses:
+      200: # /OTA_HotelBookingRuleNotifRS
+        description: |
+          We do not currently process rules.
+          Success message will be returned and data stored in the event of rules being received.
+        body:
+          application/xml:
+            example: !include ./examples/OTA_Success.xml
+
+/OTA_HotelResNotifRQ:
+  get:
+    body:
+      application/xml:
+    responses:
+      405: # /OTA_ErrorRS
+        description: Only POST requests will be actioned.
+        body:
+          application/xml:
+            example: !include ./examples/OTA_Error.xml
+  post:
+    description: |
+      Extranet will send a booking notification to channel.
+      This will then be pushed to Guestline.
+      Confirmation message will be received from Guestline.
+    body:
+      application/xml:
+    responses:
+      200: # /OTA_HotelResNotifRS received from Guestline and returned to Extranet
+        body:
+          application/xml:
+            example: !include ./examples/OTA_HotelResNotifRS.xml
+
+/OTA_HotelResModifyNotifRQ:
+  get:
+    body:
+      application/xml:
+    responses:
+      405: # /OTA_ErrorRS
+        description: Only POST requests will be actioned.
+        body:
+          application/xml:
+            example: !include ./examples/OTA_Error.xml
+
+/OTA_CancelRQ:
+  description: |
+    Cancel a booking in it's entirety.
+    NB: cancellation costs will need to be handled by extranet.
+  get:
+    body:
+      application/xml:
+    responses:
+      405: # /OTA_ErrorRS
+        description: Only POST requests will be actioned.
+        body:
+          application/xml:
+            example: !include ./examples/OTA_Error.xml
+  post:
+    body:
+      application/xml:
+    responses:
+      200:
+        body:
+          application/xml:
+            example: !include ./examples/OTA_HotelResModifyRS.xml
