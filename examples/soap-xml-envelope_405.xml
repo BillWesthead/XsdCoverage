@@ -1,0 +1,7 @@
+
+<env:Envelope xmlns:env='http://schemas.xmlsoap.org/soap/envelope/'>
+    <env:Header></env:Header>
+    <env:Body>
+        <OTA_ErrorRS xmlns="http://www.opentravel.org/OTA/2003/05" ErrorCode="Unknown" ErrorMessage="Method not implemented. 405.a [Error:405]" />
+    </env:Body>
+</env:Envelope>
